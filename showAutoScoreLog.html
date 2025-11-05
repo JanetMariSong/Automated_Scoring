@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .downloadDB {
+            padding:5px;
+            margin:5px;
+        }
+    </style>
+</head>
+
+<script>
+    function downloadFile(filename)
+    {
+        const element = document.createElement('a');
+        element.setAttribute('href', `https://teamkairos.ai:6112/assets/csv/${filename}`);
+        element.setAttribute('download', filename);
+        element.click();
+        document.body.removeChile(element);
+    }
+
+    window.onload = function()
+    {
+        for(let i=0;i<=7;i++)
+        {
+            document.getElementById(`DB_${i}`).addEventListener('click',function(){
+                fetch(`/backend-api/v2/downloadAutoScoreLog/${i}`);
+                downloadFile(`DB_${i}.csv`);
+            });
+
+            document.getElementById(`gDB_${i}`).addEventListener('click',function(){
+                fetch(`/backend-api/v2/downloadAutoScoreLogGemini/${i}`);
+                downloadFile(`gDB_${i}.csv`);
+            });
+        }
+
+        document.getElementById(`autoScore`).addEventListener('click',function(){
+                let year = document.getElementById(`Year`).value;
+                let type = document.getElementById(`Type`).value;
+            
+                alert("확인을 누르면 자동 채점이 시작됩니다");
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", `/backend-api/v2/autoScore/${year}/${type}`, false); // 동기(false) ,비동기(true)
+                xhr.onreadystatechange = function()
+                {
+                    if (xhr.readyState == 4 && xhr.status == 200)
+                    {
+                        alert("자동 채점 끝");
+                    }
+                };
+                xhr.send();
+            });
+
+        document.getElementById(`autoScoreGemini`).addEventListener('click',function(){
+                let year = document.getElementById(`Year`).value;
+                let type = document.getElementById(`Type`).value;
+            
+                alert("확인을 누르면 자동 채점이 시작됩니다");
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", `/backend-api/v2/autoScoreGemini/${year}/${type}`, false); // 동기(false) ,비동기(true)
+                xhr.onreadystatechange = function()
+                {
+                    if (xhr.readyState == 4 && xhr.status == 200)
+                    {
+                        alert("자동 채점 끝");
+                    }
+                };
+                xhr.send();
+            });
+
+        document.getElementById(`removeDuplicate`).addEventListener('click',function(){
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/backend-api/v2/removeDuplicate`, false); // 동기(false) ,비동기(true)
+            xhr.onreadystatechange = function()
+            {
+                if (xhr.readyState == 4 && xhr.status == 200)
+                {
+                    alert("중복 문항 제거 완료");
+                }
+            };
+            xhr.send();
+        });
+
+        document.getElementById(`writeScore`).addEventListener('click',function(){
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/backend-api/v2/writeScore`, false); // 동기(false) ,비동기(true)
+            xhr.onreadystatechange = function()
+            {
+                if (xhr.readyState == 4 && xhr.status == 200)
+                {
+                    alert("점수 반영 완료");
+                }
+            };
+            xhr.send();
+        });
+    }
+</script>
+
+<body>
+<div style="padding:10px 0px;">
+    <button id="DB_0" class="downloadDB">DB_0</button>
+    <button id="DB_1" class="downloadDB">DB_1</button>
+    <button id="DB_2" class="downloadDB">DB_2</button>
+    <button id="DB_3" class="downloadDB">DB_3</button>
+    <button id="DB_4" class="downloadDB">DB_4</button>
+    <button id="DB_5" class="downloadDB">DB_5</button>
+    <button id="DB_6" class="downloadDB">DB_6</button>
+    <button id="DB_7" class="downloadDB">DB_7</button>
+</div>
+<div style="padding:10px 0px;">
+    <button id="gDB_0" class="downloadDB">gDB_0</button>
+    <button id="gDB_1" class="downloadDB">gDB_1</button>
+    <button id="gDB_2" class="downloadDB">gDB_2</button>
+    <button id="gDB_3" class="downloadDB">gDB_3</button>
+    <button id="gDB_4" class="downloadDB">gDB_4</button>
+    <button id="gDB_5" class="downloadDB">gDB_5</button>
+    <button id="gDB_6" class="downloadDB">gDB_6</button>
+    <button id="gDB_7" class="downloadDB">gDB_7</button>
+</div>
+<div style="display: flex;flex-direction: row;align-items: center;">
+    <div style="display: flex;align-items: center;flex-direction: column;">
+        <label for="Year">Year <input type="text" id="Year" value="2023"></label>
+        <label for="Type">Type <input type="text" id="Type" value="AB"></label>
+    </div>
+    <div>
+        <button id="autoScore" class="downloadDB">채점하기</button>
+        <button id="autoScoreGemini" class="downloadDB">채점하기(gemini)</button>
+        <button id="removeDuplicate" class="downloadDB">중복 문항 데이터 제거</button>
+        <button id="writeScore" class="downloadDB">점수 반영하기</button>
+    </div>
+</div>
+</body>
+
+</html>
